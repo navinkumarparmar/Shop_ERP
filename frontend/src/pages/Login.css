@@ -1,0 +1,167 @@
+/* src/pages/Login.css */
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Animated Gradient Background */
+  background: linear-gradient(-45deg, #1d2671, #48373c, #0f2027, #2c5364);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background animation */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating glowing circles (3D background elements) */
+.login-wrapper::before,
+.login-wrapper::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(53, 42, 42, 0.1);
+  filter: blur(80px);
+  animation: float 8s ease-in-out infinite;
+}
+
+.login-wrapper::before {
+  top: -100px;
+  left: -100px;
+}
+
+.login-wrapper::after {
+  bottom: -100px;
+  right: -100px;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  50% { transform: translateY(40px) translateX(40px); }
+}
+
+/* Glassmorphic Login Card */
+.login-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  width: 450px;
+  max-width: 95%;
+  padding: 40px 35px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+/* Title */
+.login-card h2 {
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Subtitle */
+.login-card p {
+  text-align: center;
+  color: #ddd;
+  margin-bottom: 25px;
+}
+
+/* Inputs */
+.login-card .form-control {
+  padding: 20px;                
+  border: none;
+  border-radius: 12px;
+  font-size: 20px;             
+  height: 65px;              
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.15);  /* glass effect */
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+.login-card .form-control:focus {
+  background: rgba(255, 255, 255, 0.2);   /* transparent hi rahe */
+  outline: none;
+  border: 2px solid #ffeb3b;              /* highlight border */
+  box-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
+  color: #fff;
+}
+
+.login-card .form-control::placeholder {
+  color: #ccc;
+}
+
+/* Button */
+.login-card .btn {
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 12px;
+  width: 100%;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: 0.3s;
+}
+
+.login-card .btn:hover {
+  background: linear-gradient(45deg, #764ba2, #667eea);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+}
+
+/* Register link */
+.login-card span {
+  color: #ffeb3b;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-card span:hover {
+  text-decoration: underline;
+}
+
+/* Unique Error Box - Visible & Stylish */
+.custom-error {
+  background: rgba(255, 0, 0, 0.85);   /* bright red glass */
+  border: 2px solid rgba(255, 100, 100, 0.9);
+  color: #fff;                         /* white text for contrast */
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+  animation: fadeIn 0.4s ease, shake 0.3s ease;
+}
+
+/* Smooth fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Shake effect for error */
+@keyframes shake {
+  0% { transform: translateX(0px); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0px); }
+}
