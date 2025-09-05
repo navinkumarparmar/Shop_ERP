@@ -31,22 +31,17 @@ module.exports.login = async function(req,res,next) {
         const {email ,password} = req.body;
         console.log("req",req.body)
         if(!email || !password){
-            return res.status(400).json({
-                message:"please enter email and password"
-            })
+             throw new apiError("please enter email and password",400)
+
         }
        let isUser = await User.findOne({email:email});
        if(!isUser){
-        return res.status(404).json({
-            message:"Email not found"
-        })
+             throw new apiError("Email not found",404)
        }
         
        let matchPassword = await isUser.ComparePassword(password)
        if(!matchPassword){
-        return res.status(400).json({
-            message:"Invalid credintal"
-        })
+         throw new apiError("Invalid credintal",400)
        }
        const token = isUser.GenerateToken();
        console.log("token",token)
@@ -56,11 +51,7 @@ module.exports.login = async function(req,res,next) {
        })
 
     } catch (error) {
-           console.log('errrorr',error)
-        return res.status(500).json({
-            message: "something went wrong"
-        })
-        
+         next(error);
     }
     
     
@@ -73,9 +64,7 @@ module.exports.getOne = async function(req,res,next) {
        
        let isUser = await User.findById(userid);
        if(!isUser){
-        return res.status(404).json({
-            message:"User not found"
-        })
+        throw new apiError("User not found",404)
        }
         
        return res.status(200).json({
@@ -84,11 +73,7 @@ module.exports.getOne = async function(req,res,next) {
        })
 
     } catch (error) {
-           console.log('errrorr',error)
-        return res.status(500).json({
-            message: "something went wrong"
-        })
-        
+          next(error);
     }
     
     

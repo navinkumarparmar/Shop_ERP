@@ -1,6 +1,6 @@
 const Product = require("../models/productModel");
 const Shop = require("../models/shopModel");
-
+const apiError = require('../utils/ApiError');
 
 module.exports.createProduct = async (req, res) => {
   try {
@@ -10,9 +10,7 @@ module.exports.createProduct = async (req, res) => {
     const shopData = await Shop.findOne({ _id: ShopId, owner: req.user.id });
     console.log("shopdata",shopData);
     if (!shopData) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Not your shop or shop not found" });
+      return next(new apiError("Not your shop or shop not found", 403));
     }
 
     const product = await Product.create({
@@ -30,7 +28,7 @@ module.exports.createProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+     next(error);
   }
 };
 
@@ -38,16 +36,12 @@ module.exports.updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("shop");
     if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
+      return next(new apiError("Product not found", 404));
     }
 
 
     if (product.shop.owner.toString() !== req.user.id) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Not your shop's product" });
+       return next(new apiError("Not your shop's product", 403));
     }
 
     Object.assign(product, req.body);
@@ -59,7 +53,7 @@ module.exports.updateProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    next(error);
   }
 };
 
@@ -73,22 +67,25 @@ module.exports.getProductsByShop = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+   next(error);
   }
 };
 
-module.exports.Delete = async function(req,res,next) {
+module.exports.Delete = async (req, res, next) => {
   try {
-      const productId = req.params.id
-      const deleteproduct = await Product.findByIdAndDelete(productId);
-       return res.json({
+    const productId = req.params.id;
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
+    if (!deletedProduct) {
+      return next(new apiError("Product not found", 404));
+    }
+
+    return res.json({
       success: true,
-      message: "succesfully delete product"
+      message: "Product deleted successfully",
     });
   } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    
+    next(error);
   }
-  
-}
+};
 

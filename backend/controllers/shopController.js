@@ -1,6 +1,6 @@
 const Shop = require("../models/shopModel");
 const Product = require("../models/productModel");
-
+const apiError = require('../utils/ApiError');
 
 module.exports.createShop = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ module.exports.createShop = async (req, res) => {
       data: shop,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+   error(next);
   }
 };
 
@@ -27,9 +27,7 @@ module.exports.updateShop = async (req, res) => {
       { new: true }
     );
     if (!shop) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Shop not found or not yours" });
+       return next(new apiError("Shop not found or not yours", 404));
     }
     return res.json({
       success: true,
@@ -37,7 +35,7 @@ module.exports.updateShop = async (req, res) => {
       data: shop,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    error(next)
   }
 };
 
@@ -59,7 +57,7 @@ module.exports.getAllShopsWithProducts = async (req, res) => {
       data: shopsWithProducts,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+   error(next);
   }
 };
 
@@ -82,6 +80,6 @@ module.exports.getAllShopsWithProducts = async (req, res) => {
       data: shopsWithProducts,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    error(next)
   }
 };

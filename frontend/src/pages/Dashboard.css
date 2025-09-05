@@ -223,6 +223,20 @@
   background: #e53e3e;
   color: #fff;
 }
+.inline-product-form.add-shop {
+  background: #f4f5f8;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.shops-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
 
 @keyframes fadeInOut {
   0% { opacity: 0; transform: translateY(-20px); }

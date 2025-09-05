@@ -9,9 +9,9 @@ const {
   getAllShopsWithProducts
 } = require("../controllers/productController");
 
-apiroutes.post("/:shopid", verifyToken, createProduct);               // ✅ Create product
-apiroutes.put("/:id", verifyToken, updateProduct);             // ✅ Update product
-apiroutes.get("/shop/:shopId",verifyToken, getProductsByShop);      // ✅ Get products of one shop
+apiroutes.post("/:shopid", verifyToken, createProduct);               
+apiroutes.put("/:id", verifyToken, updateProduct);             
+apiroutes.get("/shop/:shopId",verifyToken, getProductsByShop);      
 apiroutes.delete("/:id",verifyToken,Delete ); 
 
 module.exports = apiroutes;
