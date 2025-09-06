@@ -61,9 +61,13 @@ export default function Dashboard() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const updatedProducts = selectedShop.products.map((p) =>
-          p._id === editProduct._id ? res.data.data : p
-        );
-        setSelectedShop({ ...selectedShop, products: updatedProducts });
+            p._id === editProduct._id ? res.data.data : p
+          );
+          const updatedShop = { ...selectedShop, products: updatedProducts };
+          setSelectedShop(updatedShop);
+
+          // Update shops array
+          setShops(shops.map((s) => (s._id === updatedShop._id ? updatedShop : s)));
         showMsg("Product updated successfully!");
       } else {
         const res = await axios.post(
@@ -71,11 +75,16 @@ export default function Dashboard() {
           data,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setSelectedShop({
-          ...selectedShop,
-          products: [...(selectedShop.products || []), res.data.data],
-        });
-        showMsg("Product added successfully!");
+       const updatedShop = {
+    ...selectedShop,
+    products: [...(selectedShop.products || []), res.data.data],
+  };
+  setSelectedShop(updatedShop);
+
+  // Update shops array
+  setShops(shops.map((s) => (s._id === updatedShop._id ? updatedShop : s)));
+
+  showMsg("Product added successfully!");
       }
       setShowAddProductForm(false);
       setEditProduct(null);
@@ -223,12 +232,14 @@ export default function Dashboard() {
                               await axios.delete(`/products/${prod._id}`, {
                                 headers: { Authorization: `Bearer ${token}` },
                               });
-                              setSelectedShop({
-                                ...selectedShop,
-                                products: selectedShop.products.filter(
-                                  (p) => p._id !== prod._id
-                                ),
-                              });
+                              const updatedProducts = selectedShop.products.filter(
+                                (p) => p._id !== prod._id
+                              );
+                              const updatedShop = { ...selectedShop, products: updatedProducts };
+                              setSelectedShop(updatedShop);
+                              // Update shops array
+                              setShops(shops.map((s) => (s._id === updatedShop._id ? updatedShop : s)));
+
                               showMsg("Product deleted!");
                             } catch (err) {
                               console.error(err);
@@ -300,6 +311,94 @@ export default function Dashboard() {
         </div>
       );
     }
+    if (activeView === "shop-management") {
+  return (
+    <div className="shop-management">
+      <div className="shops-header">
+        <h3>Manage All Shops</h3>
+        <button
+          className="btn btn-primary"
+          onClick={() => setShowAddShopForm(true)}
+        >
+          Add Shop
+        </button>
+      </div>
+
+      {showAddShopForm && (
+        <div className="inline-product-form">
+          <form onSubmit={handleAddShop}>
+            <input name="name" placeholder="Shop Name" required />
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button type="submit" className="btn btn-success">
+                Add Shop
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setShowAddShopForm(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div className="shops-list">
+        {shops.length ? (
+          shops.map((shop) => (
+            <div key={shop._id} className="shop-card">
+              <h4>{shop.name}</h4>
+              <div className="shop-actions">
+                <button
+                  className="btn btn-sm btn-warning"
+                  onClick={() => {
+                    const newName = prompt("Enter new name", shop.name);
+                    if (!newName) return;
+                    axios
+                      .put(`/shops/${shop._id}`, { name: newName }, {
+                        headers: { Authorization: `Bearer ${token}` },
+                      })
+                      .then((res) => {
+                        setShops(
+                          shops.map((s) =>
+                            s._id === shop._id ? res.data.data : s
+                          )
+                        );
+                        showMsg("Shop updated successfully!");
+                      })
+                      .catch(() => showMsg("Update failed", "error"));
+                  }}
+                >
+                  Update
+                </button>
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => {
+                    if (!window.confirm(`Delete ${shop.name}?`)) return;
+                    axios
+                      .delete(`/shops/${shop._id}`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                      })
+                      .then(() => {
+                        setShops(shops.filter((s) => s._id !== shop._id));
+                        showMsg("Shop deleted!");
+                      })
+                      .catch(() => showMsg("Delete failed", "error"));
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No shops yet.</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
     if (activeView === "profile") {
       return (
@@ -319,7 +418,9 @@ export default function Dashboard() {
         <ul>
           <li onClick={() => setActiveView("home")}>Home</li>
           <li onClick={() => setActiveView("profile")}>Profile</li>
-          <li onClick={() => setActiveView("shops")}>Shops</li>
+          <li onClick={() => setActiveView("shops")}>Product Managment</li>
+          <li onClick={() => setActiveView("shop-management")}>Shop Management</li>
+          
           <li
             onClick={() => {
               localStorage.removeItem("token");

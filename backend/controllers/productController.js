@@ -74,7 +74,9 @@ module.exports.getProductsByShop = async (req, res) => {
 module.exports.Delete = async (req, res, next) => {
   try {
     const productId = req.params.id;
+    console.log("req",req.params.id)
     const deletedProduct = await Product.findByIdAndDelete(productId);
+    console.log("deletedproduct",deletedProduct);
 
     if (!deletedProduct) {
       return next(new apiError("Product not found", 404));

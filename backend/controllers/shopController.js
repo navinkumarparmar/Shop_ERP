@@ -19,15 +19,15 @@ module.exports.createShop = async (req, res) => {
 };
 
 
-module.exports.updateShop = async (req, res) => {
+module.exports.updateShop = async (req, res,next) => {
   try {
     const shop = await Shop.findOneAndUpdate(
-      { _id: req.params.id, owner: req.user }, 
+      { _id: req.params.id, owner: req.user.id }, 
       req.body,
       { new: true }
     );
     if (!shop) {
-       return next(new apiError("Shop not found or not yours", 404));
+       return new apiError("Shop not found or not yours", 404);
     }
     return res.json({
       success: true,
@@ -35,12 +35,33 @@ module.exports.updateShop = async (req, res) => {
       data: shop,
     });
   } catch (error) {
+    console.log("error",error);
     error(next)
   }
 };
 
+module.exports.deleteShop = async function(req,res,next) {
+    
+    try {
+    const shopId = req.params.id;
+    console.log("req",req.params.id)
+    const deletedShop = await Shop.findByIdAndDelete(shopId);
+  
+    if (!deletedShop) {
+      return next(new apiError("Product not found", 404));
+    }
 
-module.exports.getAllShopsWithProducts = async (req, res) => {
+    return res.json({
+      success: true,
+      message: "shop deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+  
+}
+
+module.exports.getAllShopsWithProducts = async (req, res,next) => {
   try {
     const shops = await Shop.find().populate("owner", "name email");
 
