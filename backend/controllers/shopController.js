@@ -2,7 +2,7 @@ const Shop = require("../models/shopModel");
 const Product = require("../models/productModel");
 const apiError = require('../utils/ApiError');
 
-module.exports.createShop = async (req, res) => {
+module.exports.createShop = async (req, res,next) => {
   try {
     const shop = await Shop.create({
       ...req.body,
@@ -83,7 +83,7 @@ module.exports.getAllShopsWithProducts = async (req, res,next) => {
 };
 
 
-module.exports.getAllShopsWithProducts = async (req, res) => {
+module.exports.getAllShopsWithProducts = async (req, res,next) => {
   try {
     const userId = req.user.id; 
 

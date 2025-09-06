@@ -2,7 +2,7 @@ const Product = require("../models/productModel");
 const Shop = require("../models/shopModel");
 const apiError = require('../utils/ApiError');
 
-module.exports.createProduct = async (req, res) => {
+module.exports.createProduct = async (req, res,next) => {
   try {
     const {name, price, description, stock, category } = req.body;
      let ShopId = req.params.shopid;
@@ -32,7 +32,7 @@ module.exports.createProduct = async (req, res) => {
   }
 };
 
-module.exports.updateProduct = async (req, res) => {
+module.exports.updateProduct = async (req, res,next) => {
   try {
     const product = await Product.findById(req.params.id).populate("shop");
     if (!product) {
@@ -58,7 +58,7 @@ module.exports.updateProduct = async (req, res) => {
 };
 
 
-module.exports.getProductsByShop = async (req, res) => {
+module.exports.getProductsByShop = async (req, res,next) => {
   try {
     const products = await Product.find({ shop: req.params.shopId });
     return res.json({
